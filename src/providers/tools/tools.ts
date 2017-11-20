@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Gatt } from '../../models/gatt';
 import { Storage } from "@ionic/storage";
-import { BLE } from '@ionic-native/BLE';
 
 @Injectable()
 export class ToolsProvider {
@@ -10,8 +9,7 @@ export class ToolsProvider {
   base64;
 
   constructor(
-    private gatt: Gatt, 
-    private ble: BLE,) {
+    private gatt: Gatt) {
     
   }
 
