@@ -22,7 +22,12 @@
     <br>
       <font class="title">{{o.id}}</font><br>
       <font class="title">rssi : </font><font class="value">{{o.rssi}} dBm</font><br>
-      <font class="title">advertising : </font><font class="value">{{o.advertising}}</font>
+      <p *ngIf="o.data" class="advertising">
+        <ion-item *ngFor="let item of o.data" no-lines class="advertising">
+            <font class="title">{{ item.service }} : </font><font class="value">{{ item.value }}</font>
+        </ion-item>
+<!--        <font class="title">advertising : </font><font class="value">{{o.advertising}}</font>-->
+      </p>
       <button ion-button clear (click)="onDisplayDetail(o)">DETAIL</button>
       <button ion-button clear (click)="onGetAdvertisingData(o)">READ</button>
   </ion-item>

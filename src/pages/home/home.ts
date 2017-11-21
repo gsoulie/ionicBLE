@@ -4,7 +4,6 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { BLE } from '@ionic-native/BLE';
 import {Buffer} from 'buffer';
-//import {advlib} from 'advlib';
 declare function require(name: string);
 var adv = require('advlib');
 
@@ -63,10 +62,28 @@ export class HomePage {
     var adData = new Uint8Array(device.advertising)
     var advertisingObject = adv.ble.process(this.buf2hex(adData));
     var temperature = advertisingObject.advData.serviceData.data;
+    var valeLen = advertisingObject.value.length;
+    var valueArray = [];  // contains "value" node 
+    var temp = "";
+    
+    // Explode "value" node into 16 bits array
+    for(let i = 0; i < valeLen; i++){
+      if(i%2 == 0 && i > 0){
+        valueArray.push(temp)
+        temp = "";
+      }
+      temp += advertisingObject.value[i];
+    }
+    valueArray.push(temp);
 
     //if(advertisingObject.advData.serviceData == "1809"){
       var convertedData = this.convertToLittleEndian(temperature);
-      device.advertising = parseInt(convertedData, 16)+"°C";
+    var data = [
+      {service: advertisingObject.advData.serviceData.specificationName, value: parseInt(convertedData, 16)+"°C"},
+      {service: "Battery level", value: parseInt(valueArray[0],16) + "%"}
+    ];
+
+      device.data = data;
     //}
   }
 
@@ -75,25 +92,36 @@ export class HomePage {
     var adData = new Uint8Array(device.advertising)
     var advertisingObject = adv.ble.process(this.buf2hex(adData));
     var temperature = advertisingObject.advData.serviceData.data;
+    //var batterieLevel = substring(advertisingObject.value)
+    var valeLen = advertisingObject.value.length;
+    var valueArray = [];
+    var temp = "";
     
-
-   /* var SCALE_LSB = 0.03125;
-    var t;
-    var it;
-   
-    it = parseInt((temperature >> 2));
-    t = ((float)(it)) * SCALE_LSB;*/
-   /* *tObj = t;
-
-   
-    it = (int)((rawAmbTemp) >> 2);
-    t = (float)it;
-    *tAmb = t * SCALE_LSB;*/
-
-
-        
-    alert(this.buf2hex(adData) + "\r\n" + JSON.stringify(advertisingObject));
+    for(let i = 0; i < valeLen; i++){
+      if(i%2 == 0 && i > 0){
+        valueArray.push(temp)
+        temp = "";
+      }
+      temp += advertisingObject.value[i];
+    }
+    valueArray.push(temp);
+    
+            
+    alert(this.buf2hex(adData) + "\r\n" + JSON.stringify(advertisingObject)+"\r\n"+valueArray+"\r\n"+parseInt(valueArray[0], 16));
   }
+
+
+  /**
+   * Convert hex value to ASCII
+   * @param hexx 
+   */
+  hex2a(hexx) {
+    var hex = hexx.toString();//force conversion
+    var str = '';
+    for (var i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
+}
 
   /**
    * Convert hex value to little Endian value

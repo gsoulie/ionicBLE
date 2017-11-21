@@ -12,6 +12,9 @@ import { Gatt } from '../../models/gatt';
 export class DevicePage implements OnInit {
   device: any = {};
   dataset = [];
+  loader = this.loadingCtrl.create({
+    content: "Connecting..."
+  });
   
   constructor(public navCtrl: NavController, 
     public navParams: NavParams, 
@@ -50,25 +53,23 @@ export class DevicePage implements OnInit {
       );
    */
   onConnect(){
-    var loader = this.loadingCtrl.create({
-      content: "Connecting..."
-    });
-    loader.present();
+    
+    this.loader.present();
     this.ble.connect(this.device.id)
     .subscribe(
       (peripheralData) => {
-        loader.onDidDismiss(()=>{
+        this.loader.onDidDismiss(()=>{
           this.dataset = this.tools.onParseCharacteristics(peripheralData.characteristics);
         });
-        loader.dismiss();
+        this.loader.dismiss();
       },
       (err) => {
-        loader.dismiss();
+        this.loader.dismiss();
         alert("connection failed " + JSON.stringify(err));
         this.navCtrl.popToRoot();
       },
       () => {
-        loader.dismiss();
+        this.loader.dismiss();
         alert("state undefined");
     });
   }
@@ -148,6 +149,7 @@ export class DevicePage implements OnInit {
   }
 
   ionViewDidLeave(){
+    this.loader.dismiss();
     this.ble.disconnect(this.device.id);
   }
 
