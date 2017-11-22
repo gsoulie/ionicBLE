@@ -4,6 +4,7 @@ import { NavController, NavParams, LoadingController } from 'ionic-angular';
 import { BLE } from '@ionic-native/BLE';
 import {Buffer} from 'buffer';
 import { Gatt } from '../../models/gatt';
+import { AlertController } from 'ionic-angular/components/alert/alert-controller';
 
 @Component({
   selector: 'page-device',
@@ -21,7 +22,8 @@ export class DevicePage implements OnInit {
     public ble: BLE, 
     private gatt: Gatt,
     public loadingCtrl: LoadingController,
-    private tools: ToolsProvider) {
+    private tools: ToolsProvider,
+    private alertCtrl: AlertController) {
 
     this.device = this.navParams.get('device');
   }
@@ -130,6 +132,35 @@ export class DevicePage implements OnInit {
     });
   }
 
+  onPromptWritingValue(service, characteristic){
+    let prompt = this.alertCtrl.create({
+      title: 'Write value',
+      message: "",
+      inputs: [
+        {
+          name: '0x',
+          placeholder: 'value'
+        },
+      ],
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Send',
+          handler: data => {
+            var value = new Uint8Array(1);
+            value[0] = data;
+            this.onWriteCharacteristic(service,characteristic,value.buffer);
+          }
+        }
+      ]
+    });
+    prompt.present();
+  }
   /**
    * Write on characteristic
    * @param service 

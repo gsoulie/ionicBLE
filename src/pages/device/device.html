@@ -31,6 +31,11 @@
                   (click)="onReadCharacteristic(item.service, characteristic)">
                   <ion-icon name="md-eye"></ion-icon>
           </button>
+          <button ion-button clear color="black" 
+                item-right icon-only 
+                (click)="onPromptWritingValue(item.service, characteristic)">
+                <ion-icon name="md-create"></ion-icon>
+        </button>
         </ion-item>
     </ion-list>
   </ion-item-group>

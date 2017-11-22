@@ -80,7 +80,8 @@ export class HomePage {
    * @param value
    */
   convertToTemperature(value){
-    var convertedData = parseInt(this.tools.convertToLittleEndian(value), 16);
+    //var convertedData = parseInt(this.tools.convertToLittleEndian(value), 16);
+    var convertedData = parseFloat(this.tools.convertToLittleEndian(value));
 
     return convertedData;
   }
@@ -125,21 +126,7 @@ export class HomePage {
     valueArray.push(temp);
     
             
-    alert(this.tools.buf2hex(adData) + "\r\n" + JSON.stringify(advertisingObject)+"\r\n"+valueArray+"\r\n"+parseInt(valueArray[0], 16));
-  }
-
-
-  onRead(o){
-    
-    this.ble.read(o.id,"1809","2a1c")
-    .then(data =>{
-      var level = String.fromCharCode.apply(null,new Uint8Array(data))
-      var converted = level.charCodeAt(0);
-      alert("level " + level+"\r\nconverted : " + converted);
-    })
-    .catch(err => {
-      alert("error : " + JSON.stringify(err));
-    })
+    alert(this.tools.buf2hex(adData) + "\r\n" + JSON.stringify(advertisingObject));
   }
 
 }
