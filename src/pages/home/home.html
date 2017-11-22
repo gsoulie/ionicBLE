@@ -23,7 +23,7 @@
       <font class="title">{{o.id}}</font><br>
       <font class="title">rssi : </font><font class="value">{{o.rssi}} dBm</font><br>
       <p *ngIf="o.data" class="advertising">
-        <ion-item *ngFor="let item of o.data" no-lines class="advertising">
+        <ion-item *ngFor="let item of o.data" no-lines class="itemClass">
             <font class="title">{{ item.service }} : </font><font class="value">{{ item.value }}</font>
         </ion-item>
 <!--        <font class="title">advertising : </font><font class="value">{{o.advertising}}</font>-->
